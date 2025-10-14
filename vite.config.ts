@@ -5,8 +5,6 @@ import react from '@vitejs/plugin-react';
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
     return {
-      // PROPRIEDADE CRUCIAL: Define o caminho base como o nome deste repositório
-      base: '/amigo-virtual/', 
       server: {
         port: 3000,
         host: '0.0.0.0',

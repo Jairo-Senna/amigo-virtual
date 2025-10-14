@@ -1,0 +1,7 @@
+{
+  "name": "chat bot",
+  "description": "Uma ferramenta interativa que permite que você crie, teste e brinque com personagens de IA personalizados em tempo real.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}

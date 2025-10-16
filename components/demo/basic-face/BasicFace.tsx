@@ -31,7 +31,8 @@ export default function BasicFace({
   radius = 250,
   color,
 }: BasicFaceProps) {
-  const timeoutRef = useRef<NodeJS.Timeout>(null);
+  // FIX: Use ReturnType<typeof setTimeout> for browser environments instead of NodeJS.Timeout
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Audio output volume
   const { volume } = useLiveAPIContext();

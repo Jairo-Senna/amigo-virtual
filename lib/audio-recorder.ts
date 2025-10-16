@@ -35,7 +35,13 @@ function arrayBufferToBase64(buffer: ArrayBuffer) {
   return window.btoa(binary);
 }
 
-export class AudioRecorder extends EventEmitter {
+// FIX: Add type definitions for EventEmitter events
+interface AudioRecorderEvents {
+  data: (base64: string) => void;
+  volume: (volume: number) => void;
+}
+
+export class AudioRecorder extends EventEmitter<AudioRecorderEvents> {
   stream: MediaStream | undefined;
   audioContext: AudioContext | undefined;
   source: MediaStreamAudioSourceNode | undefined;

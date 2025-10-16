@@ -786,6 +786,56 @@ input[type='range'] {
   accent-color: white;
 }
 
+.personality-suggester {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.personality-suggester .button {
+  background-color: var(--Blue-500);
+  transition: background-color 0.2s;
+}
+
+.personality-suggester .button:hover:not(:disabled) {
+  background-color: var(--Blue-400);
+}
+
+.archetypes {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.archetypes label {
+  color: var(--Neutral-80);
+  font-size: 1em;
+}
+
+.archetype-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.archetype-picker button {
+  background-color: var(--Neutral-20);
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  border: 1px solid var(--Neutral-30);
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+  color: var(--Neutral-80);
+}
+
+.archetype-picker button:hover {
+  background-color: var(--Neutral-30);
+  color: var(--Neutral-90);
+}
+
 /* agenst */
 
 .roomInfo {

@@ -135,7 +135,8 @@ export class GenAILiveClient extends EventEmitter<LiveClientEventTypes> {
 
   public send(parts: Part | Part[], turnComplete: boolean = true) {
     if (this._status !== 'connected' || !this.session) {
-      this.emit('error', new ErrorEvent('Client is not connected'));
+      // FIX: Cast to EventEmitter to resolve TypeScript error where 'emit' is not found.
+      (this as EventEmitter<LiveClientEventTypes>).emit('error', new ErrorEvent('Client is not connected'));
       return;
     }
     this.session.sendClientContent({ turns: parts, turnComplete });
@@ -144,7 +145,7 @@ export class GenAILiveClient extends EventEmitter<LiveClientEventTypes> {
 
   public sendRealtimeInput(chunks: Array<{ mimeType: string; data: string }>) {
     if (this._status !== 'connected' || !this.session) {
-      this.emit('error', new ErrorEvent('Client is not connected'));
+      (this as EventEmitter<LiveClientEventTypes>).emit('error', new ErrorEvent('Client is not connected'));
       return;
     }
     chunks.forEach(chunk => {
@@ -169,7 +170,7 @@ export class GenAILiveClient extends EventEmitter<LiveClientEventTypes> {
 
   public sendToolResponse(toolResponse: LiveClientToolResponse) {
     if (this._status !== 'connected' || !this.session) {
-      this.emit('error', new ErrorEvent('Client is not connected'));
+      (this as EventEmitter<LiveClientEventTypes>).emit('error', new ErrorEvent('Client is not connected'));
       return;
     }
     if (
@@ -186,17 +187,17 @@ export class GenAILiveClient extends EventEmitter<LiveClientEventTypes> {
 
   protected onMessage(message: LiveServerMessage) {
     if (message.setupComplete) {
-      this.emit('setupcomplete');
+      (this as EventEmitter<LiveClientEventTypes>).emit('setupcomplete');
       return;
     }
     if (message.toolCall) {
       this.log('server.toolCall', message);
-      this.emit('toolcall', message.toolCall);
+      (this as EventEmitter<LiveClientEventTypes>).emit('toolcall', message.toolCall);
       return;
     }
     if (message.toolCallCancellation) {
       this.log('receive.toolCallCancellation', message);
-      this.emit('toolcallcancellation', message.toolCallCancellation);
+      (this as EventEmitter<LiveClientEventTypes>).emit('toolcallcancellation', message.toolCallCancellation);
       return;
     }
 
@@ -204,12 +205,12 @@ export class GenAILiveClient extends EventEmitter<LiveClientEventTypes> {
       const { serverContent } = message;
       if ('interrupted' in serverContent) {
         this.log('receive.serverContent', 'interrupted');
-        this.emit('interrupted');
+        (this as EventEmitter<LiveClientEventTypes>).emit('interrupted');
         return;
       }
       if ('turnComplete' in serverContent) {
         this.log('server.send', 'turnComplete');
-        this.emit('turncomplete');
+        (this as EventEmitter<LiveClientEventTypes>).emit('turncomplete');
       }
 
       if (serverContent.modelTurn) {
@@ -224,7 +225,7 @@ export class GenAILiveClient extends EventEmitter<LiveClientEventTypes> {
         base64s.forEach(b64 => {
           if (b64) {
             const data = base64ToArrayBuffer(b64);
-            this.emit('audio', data);
+            (this as EventEmitter<LiveClientEventTypes>).emit('audio', data);
             this.log(`server.audio`, `buffer (${data.byteLength})`);
           }
         });
@@ -235,7 +236,7 @@ export class GenAILiveClient extends EventEmitter<LiveClientEventTypes> {
         parts = otherParts;
 
         const content: LiveServerContent = { modelTurn: { parts } };
-        this.emit('content', content);
+        (this as EventEmitter<LiveClientEventTypes>).emit('content', content);
         this.log(`server.content`, message);
       } else {
         console.log('received unmatched message', message);
@@ -249,12 +250,12 @@ export class GenAILiveClient extends EventEmitter<LiveClientEventTypes> {
 
     const message = `Could not connect to GenAI Live: ${e.message}`;
     this.log(`server.${e.type}`, message);
-    this.emit('error', e);
+    (this as EventEmitter<LiveClientEventTypes>).emit('error', e);
   }
 
   protected onOpen() {
     this._status = 'connected';
-    this.emit('open');
+    (this as EventEmitter<LiveClientEventTypes>).emit('open');
   }
 
   protected onClose(e: CloseEvent) {
@@ -272,7 +273,7 @@ export class GenAILiveClient extends EventEmitter<LiveClientEventTypes> {
       `server.${e.type}`,
       `disconnected ${reason ? `with reason: ${reason}` : ``}`
     );
-    this.emit('close', e);
+    (this as EventEmitter<LiveClientEventTypes>).emit('close', e);
   }
 
   /**
@@ -281,7 +282,7 @@ export class GenAILiveClient extends EventEmitter<LiveClientEventTypes> {
    * @param message - Log message
    */
   protected log(type: string, message: string | object) {
-    this.emit('log', {
+    (this as EventEmitter<LiveClientEventTypes>).emit('log', {
       type,
       message,
       date: new Date(),
